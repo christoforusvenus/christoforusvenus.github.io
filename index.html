@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Venus — Portfolio</title>
+  <meta name="description" content="Venus — Portfolio & Links" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b0f19;
+      --text: #e9eefb;
+      --muted: rgba(233,238,251,.76);
+      --hero-grad:
+        radial-gradient(1200px 600px at 18% 8%, rgba(13,110,253,.28), transparent 60%),
+        radial-gradient(900px 520px at 92% 16%, rgba(32,201,151,.22), transparent 55%),
+        radial-gradient(1000px 620px at 50% 100%, rgba(255,193,7,.16), transparent 55%);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+    .hero { background-image: var(--hero-grad); min-height: 100vh; position: relative; }
+
+    .glass {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .muted { color: var(--muted); }
+    .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+      background: rgba(11,15,25,.65);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .nav-link { color: rgba(233,238,251,.8); }
+    .nav-link:hover { color: #fff; }
+    .navbar-brand { letter-spacing: .2px; }
+
+    .btn-outline-light { border-color: rgba(255,255,255,.35); }
+    .btn-outline-light:hover { border-color: rgba(255,255,255,.55); }
+
+    .badge-skill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); }
+
+    .project-card {
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .project-card:hover{
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.075);
+    }
+
+    .divider { height: 1px; background: rgba(255,255,255,.10); }
+
+    .avatar {
+      width: 112px;
+      height: 112px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+      cursor: pointer;
+    }
+
+    section { scroll-margin-top: 90px; }
+    footer { color: rgba(233,238,251,.65); }
+
+    .dot {
+      display:inline-block;
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      margin-right: 8px;
+      transform: translateY(-1px);
+    }
+
+    .lang-btn.active {
+      background: rgba(255,255,255,.12) !important;
+      border-color: rgba(255,255,255,.35) !important;
+    }
+
+
+    .modal-backdrop.show { opacity: .85; }
+    .zoom-img { cursor: zoom-out; max-height: 85vh; }
+
+    .peek-cat{
+      position: fixed;
+      left: 16px;
+      bottom: -12px;
+      z-index: 2000;
+      pointer-events: none;
+      opacity: .95;
+      filter: drop-shadow(0 22px 40px rgba(0,0,0,.55));
+      animation: catPeek 8s ease-in-out infinite;
+    }
+
+    .cat-head{
+      width: 78px;
+      height: 66px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: relative;
+      transform-origin: 20% 90%;
+      animation: catWiggle 8s ease-in-out infinite;
+    }
+
+    .cat-head::after{
+      /* subtle highlight */
+      content:"";
+      position:absolute;
+      inset: 8px 10px auto auto;
+      width: 26px; height: 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      transform: rotate(18deg);
+      opacity: .6;
+    }
+
+    .ear{
+      position: absolute;
+      top: -12px;
+      width: 22px;
+      height: 22px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.16);
+      transform: rotate(45deg);
+      border-radius: 6px;
+    }
+    .ear.left{ left: 12px; }
+    .ear.right{ right: 12px; }
+
+    .ear::after{
+      /* inner ear */
+      content:"";
+      position:absolute;
+      inset: 5px;
+      border-radius: 6px;
+      background: rgba(255, 193, 7, .10);
+    }
+
+    .eye{
+      position: absolute;
+      top: 28px;
+      width: 10px;
+      height: 10px;
+      background: rgba(233,238,251,.95);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(233,238,251,.10);
+      animation: blink 6.2s infinite;
+    }
+    .eye.left{ left: 22px; }
+    .eye.right{ right: 22px; }
+
+    .cheek{
+      position:absolute;
+      top: 40px;
+      width: 14px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255, 105, 180, .18); /* blush */
+      filter: blur(.2px);
+      opacity: .85;
+    }
+    .cheek.left{ left: 14px; }
+    .cheek.right{ right: 14px; }
+
+    .nose{
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      width: 10px;
+      height: 8px;
+      transform: translateX(-50%);
+      background: rgba(255,193,7,.60);
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 6px 18px rgba(255,193,7,.10);
+    }
+
+    .mouth{
+      position:absolute;
+      top: 47px;
+      left: 50%;
+      width: 18px;
+      height: 10px;
+      transform: translateX(-50%);
+    }
+    .mouth::before,
+    .mouth::after{
+      content:"";
+      position:absolute;
+      top: 0;
+      width: 9px;
+      height: 8px;
+      border: 1.5px solid rgba(233,238,251,.55);
+      border-top: 0;
+      border-left: 0;
+      border-radius: 0 0 10px 0;
+      transform: rotate(35deg);
+      opacity: .8;
+    }
+    .mouth::before{ left: 0; }
+    .mouth::after{
+      right: 0;
+      transform: scaleX(-1) rotate(35deg);
+    }
+
+    .whiskers{
+      position: absolute;
+      top: 44px;
+      width: 26px;
+      height: 14px;
+      opacity: .9;
+    }
+    .whiskers.left{ left: -12px; transform: rotate(-6deg); }
+    .whiskers.right{ right: -12px; transform: rotate(6deg); }
+
+    .whiskers::before,
+    .whiskers::after{
+      content:"";
+      position:absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(233,238,251,.45);
+    }
+    .whiskers::before{ top: 4px; }
+    .whiskers::after{ top: 10px; }
+
+    /* animations */
+    @keyframes blink{
+      0%, 42%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(.15); }
+      47% { transform: scaleY(1); }
+    }
+
+    @keyframes catWiggle{
+      0%, 18%, 100% { transform: rotate(0deg); }
+      35% { transform: rotate(-3deg); }
+      55% { transform: rotate(2deg); }
+      75% { transform: rotate(-1deg); }
+    }
+
+    @keyframes catPeek{
+      0%, 12% { transform: translateY(42px); opacity: 0; }
+      22%     { transform: translateY(0);    opacity: .95; }
+      72%     { transform: translateY(0);    opacity: .95; }
+      86%     { transform: translateY(42px); opacity: 0; }
+      100%    { transform: translateY(42px); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .peek-cat, .cat-head, .eye { animation: none !important; }
+      .peek-cat { opacity: .35; }
+    }
+  </style>
+</head>
+
+<body class="hero">
+
+  <div class="peek-cat" aria-hidden="true">
+    <div class="cat-head">
+      <span class="ear left"></span>
+      <span class="ear right"></span>
+
+      <span class="eye left"></span>
+      <span class="eye right"></span>
+
+      <span class="cheek left"></span>
+      <span class="cheek right"></span>
+
+      <span class="nose"></span>
+      <span class="mouth"></span>
+
+      <span class="whiskers left"></span>
+      <span class="whiskers right"></span>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg py-2">
+    <div class="container">
+      <a class="navbar-brand text-white fw-semibold" href="#top">Christoforus Venus</a>
+
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-1 gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="#projects" data-i18n="nav.projects">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="#skills" data-i18n="nav.skills">Skills</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav.contact">Contact</a></li>
+
+          <li class="nav-item ms-lg-2">
+            <div class="btn-group" role="group" aria-label="Language toggle">
+              <button id="btnEN" type="button" class="btn btn-sm btn-outline-light lang-btn">EN</button>
+              <button id="btnDE" type="button" class="btn btn-sm btn-outline-light lang-btn">DE</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top" class="container pb-5">
+
+    <section class="row align-items-center g-4 py-4 py-lg-5">
+      <div class="col-lg-7">
+        <div class="glass p-4 p-lg-5 shadow-soft">
+          <p class="mb-2 muted" data-i18n="hero.hi">👋 Hi, I’m</p>
+          <h1 class="display-5 fw-bold mb-3">Venus</h1>
+
+          <p class="lead muted mb-4" data-i18n="hero.tagline">
+            Master’s student in Business Information Systems Engineering (BISE) at TH Ingolstadt •
+            Python Developer • Data & AI Enthusiast
+          </p>
+
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-primary px-4" href="https://www.linkedin.com/in/christoforus-venus-b02a64247/" target="_blank" rel="noreferrer">
+              LinkedIn
+            </a>
+            <a class="btn btn-outline-light px-4" href="https://github.com/christoforusvenus" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+            <a class="btn btn-outline-light px-4" href="mailto:venus.chrisven@gmail.com" data-i18n="hero.emailBtn">
+              Email
+            </a>
+          </div>
+
+          <div class="mt-4 divider"></div>
+
+          <div class="row mt-4 g-3">
+            <div class="col-sm-6">
+              <div class="glass p-3 h-100">
+                <div class="fw-semibold"><span class="dot"></span><span data-i18n="facts.basedIn">Based in</span></div>
+                <div class="muted" data-i18n="facts.germany">Gaimersheim, Bavaria, Germany</div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="glass p-3 h-100">
+                <div class="fw-semibold"><span class="dot"></span><span data-i18n="facts.focus">Focus</span></div>
+                <div class="muted" data-i18n="facts.focusValue">
+                  Python • Data Science • Data Engineering • Database Architecture
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="glass p-4 p-lg-5 shadow-soft h-100">
+          <div class="text-center mb-4">
+            <img
+              src="avatar.jpg"
+              alt="Profile photo"
+              class="avatar"
+              role="button"
+              data-bs-toggle="modal"
+              data-bs-target="#photoModal"
+            >
+            <div class="mt-3 muted small" data-i18n="hero.microtag">Python Developer • Cat lover • DE/EN</div>
+          </div>
+
+          <h2 class="h5 fw-semibold mb-3" data-i18n="hero.quickTitle">Quick intro</h2>
+          <p class="muted mb-3" data-i18n="hero.quickBody">
+            I’m an Indonesian cat lover currently studying Business Information Systems Engineering (BISE) in Germany.
+            I build practical projects with Python and data tools, and I’m comfortable communicating in English and German.
+          </p>
+
+          <ul class="muted mb-0">
+            <li data-i18n="hero.b1">Python development (automation, APIs, data processing)</li>
+            <li data-i18n="hero.b2">Data pipelines: ingestion → transformation → storage → serving</li>
+            <li data-i18n="hero.b3">Dashboards & analytics for decision-making</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="py-4">
+      <div class="glass p-4 p-lg-5 shadow-soft">
+        <div class="d-flex align-items-end justify-content-between flex-wrap gap-2 mb-3">
+          <h2 class="h3 fw-bold mb-0" data-i18n="projects.title">Projects</h2>
+          <div class="muted" data-i18n="projects.subtitle">Selected portfolio highlights</div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="glass project-card p-4 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <h3 class="h5 fw-semibold mb-2" data-i18n="projects.p1.title">PAXG Real-Time Analytics Pipeline</h3>
+                <span class="badge text-bg-primary" data-i18n="projects.badgeRealtime">Realtime</span>
+              </div>
+
+              <p class="muted mb-3" data-i18n="projects.p1.desc">
+                Live market ingestion → data lake → aggregation & serving in PostgreSQL → dashboard (optional ML prediction).
+              </p>
+
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-skill rounded-pill px-3 py-2">Python</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">Spark</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">MinIO (S3)</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">PostgreSQL</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">Superset</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">Docker</span>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-sm btn-outline-light"
+                   href="https://github.com/christoforusvenus/paxg-realtime-pipeline"
+                   target="_blank" rel="noreferrer" data-i18n="projects.repoBtn">Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="glass project-card p-4 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <h3 class="h5 fw-semibold mb-2" data-i18n="projects.p2.title">Weather Alert Automation</h3>
+                <span class="badge text-bg-success" data-i18n="projects.badgeAutomation">Automation</span>
+              </div>
+
+              <p class="muted mb-3" data-i18n="projects.p2.desc">
+                Scheduled ETL that checks weather conditions and sends alerts, with logging and simple persistence.
+              </p>
+
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge badge-skill rounded-pill px-3 py-2">Python</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">API</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">PostgreSQL</span>
+                <span class="badge badge-skill rounded-pill px-3 py-2">Docker</span>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-sm btn-outline-light"
+                   href="https://github.com/christoforusvenus/weather-alert"
+                   target="_blank" rel="noreferrer" data-i18n="projects.repoBtn">Repo</a>
+                <a class="btn btn-sm btn-primary"
+                   href="https://weather-alert-ckuy.onrender.com/subscribe-form"
+                   target="_blank" rel="noreferrer" data-i18n="projects.liveBtn">Live</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="py-4">
+      <div class="glass p-4 p-lg-5 shadow-soft">
+        <h2 class="h3 fw-bold mb-3" data-i18n="skills.title">Skills</h2>
+
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge badge-skill rounded-pill px-3 py-2">Python</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">SQL (PostgreSQL)</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2" data-i18n="skills.dataScience">Data Science</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">Data Modeling</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">Apache Spark</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">Docker</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">MinIO / S3</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">Superset</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">REST APIs</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">Git/GitHub</span>
+              <span class="badge badge-skill rounded-pill px-3 py-2">Bootstrap</span>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="glass p-3 h-100">
+              <div class="fw-semibold mb-2" data-i18n="skills.enjoyTitle">What I enjoy building</div>
+              <div class="muted small" data-i18n="skills.enjoyBody">
+                Data pipelines, storage & serving layers, dashboards, automation, and machine learning.
+              </div>
+
+              <div class="mt-3 fw-semibold mb-2" data-i18n="skills.learnTitle">Currently learning</div>
+              <div class="muted small" data-i18n="skills.learnBody">
+                Better data modeling, streaming patterns, production-ready monitoring practices, and PyTorch.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="contact" class="py-4">
+      <div class="glass p-4 p-lg-5 shadow-soft">
+        <h2 class="h3 fw-bold mb-3" data-i18n="contact.title">Contact</h2>
+        <p class="muted mb-3" data-i18n="contact.body">
+          Best way to reach me: email or LinkedIn.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-outline-light" href="mailto:venus.chrisven@gmail.com" data-i18n="contact.emailBtn">Email me</a>
+          <a class="btn btn-outline-light" href="https://www.linkedin.com/in/christoforus-venus-b02a64247/" target="_blank" rel="noreferrer">
+            LinkedIn
+          </a>
+          <a class="btn btn-outline-light" href="https://github.com/christoforusvenus" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-4 text-center muted">
+      <small>© <span id="year"></span> Venus • Built with Bootstrap</small>
+    </footer>
+
+  </main>
+
+  <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-transparent border-0">
+        <div class="modal-body p-0 text-center">
+          <img src="avatar.jpg" alt="Profile photo enlarged" class="img-fluid rounded-4 shadow zoom-img">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const i18n = {
+      en: {
+        "nav.projects": "Projects",
+        "nav.skills": "Skills",
+        "nav.contact": "Contact",
+
+        "hero.hi": "👋 Hi, I’m",
+        "hero.tagline": "Master’s student in Business Information Systems Engineering (BISE) at TH Ingolstadt • Python Developer • Data & AI Enthusiast",
+        "hero.emailBtn": "Email",
+        "hero.microtag": "Python Developer • Cat lover • DE/EN",
+
+        "hero.quickTitle": "Quick intro",
+        "hero.quickBody": "I’m an Indonesian, cat lover, and currently studying Business Information Systems Engineering (BISE) in Germany. I build practical projects with Python and data tools, and I’m comfortable communicating in English and German.",
+        "hero.b1": "Python development (automation, APIs, data processing)",
+        "hero.b2": "Data pipelines: ingestion → transformation → storage → serving",
+        "hero.b3": "Dashboards & analytics for decision-making",
+
+        "facts.basedIn": "Based in",
+        "facts.germany": "Gaimersheim, Bavaria, Germany",
+        "facts.focus": "Focus",
+        "facts.focusValue": "Python • Data Science • Data Engineering • Database Architecture",
+
+        "projects.title": "Projects",
+        "projects.subtitle": "Selected portfolio highlights",
+        "projects.badgeRealtime": "Realtime",
+        "projects.badgeAutomation": "Automation",
+        "projects.p1.title": "PAXG Real-Time Analytics Pipeline",
+        "projects.p1.desc": "Live market ingestion → data lake → aggregation & serving in PostgreSQL → dashboard (optional ML prediction).",
+        "projects.p2.title": "Weather Alert Automation",
+        "projects.p2.desc": "Scheduled ETL that checks weather conditions and sends alerts, with logging and simple persistence.",
+        "projects.repoBtn": "Repo",
+        "projects.liveBtn": "Live",
+
+        "skills.title": "Skills",
+        "skills.dataScience": "Data Science",
+        "skills.enjoyTitle": "What I enjoy building",
+        "skills.enjoyBody": "Data pipelines, storage & serving layers, dashboards, automation, and machine learning.",
+        "skills.learnTitle": "Currently learning",
+        "skills.learnBody": "Better data modeling, streaming patterns, production-ready monitoring practices, and PyTorch.",
+
+        "contact.title": "Contact",
+        "contact.body": "Best way to reach me: email or LinkedIn.",
+        "contact.emailBtn": "Email me"
+      },
+
+      de: {
+        "nav.projects": "Projekte",
+        "nav.skills": "Skills",
+        "nav.contact": "Kontakt",
+
+        "hero.hi": "👋 Hi, ich bin",
+        "hero.tagline": "Masterstudent in Business Information Systems Engineering (BISE) an der TH Ingolstadt • Python Developer • Data & AI",
+        "hero.emailBtn": "E-Mail",
+        "hero.microtag": "Python Developer • Katzenfan • DE/EN",
+
+        "hero.quickTitle": "Kurzprofil",
+        "hero.quickBody": "Ich komme aus Indonesien, bin Katzenfan und studiere derzeit Business Information Systems Engineering (BISE) in Deutschland. Ich setze praktische Projekte mit Python und Data-Tools um und kommuniziere sicher auf Englisch und Deutsch.",
+        "hero.b1": "Python-Entwicklung (Automatisierung, APIs, Data Processing)",
+        "hero.b2": "Data Pipelines: Ingestion → Transformation → Storage → Serving",
+        "hero.b3": "Dashboards & Analytics für Entscheidungen",
+
+        "facts.basedIn": "Standort",
+        "facts.germany": "Gaimersheim, Bayern, Deutschland",
+        "facts.focus": "Fokus",
+        "facts.focusValue": "Python • Data Science • Data Engineering • Database Architecture",
+
+        "projects.title": "Projekte",
+        "projects.subtitle": "Ausgewählte Portfolio-Highlights",
+        "projects.badgeRealtime": "Realtime",
+        "projects.badgeAutomation": "Automatisierung",
+        "projects.p1.title": "PAXG Real-Time Analytics Pipeline",
+        "projects.p1.desc": "Live-Marktdaten → Data Lake → Aggregation & Serving in PostgreSQL → Dashboard (optional ML-Prediction).",
+        "projects.p2.title": "Weather Alert Automation",
+        "projects.p2.desc": "Geplante ETL, die Wetterbedingungen prüft und Alerts sendet – mit Logging und einfacher Persistenz.",
+        "projects.repoBtn": "Repo",
+        "projects.liveBtn": "Live",
+
+        "skills.title": "Skills",
+        "skills.dataScience": "Data Science",
+        "skills.enjoyTitle": "Woran ich gern arbeite",
+        "skills.enjoyBody": "Data Pipelines, Storage- & Serving-Layer, Dashboards, Automatisierung und Machine Learning.",
+        "skills.learnTitle": "Aktuell lerne ich",
+        "skills.learnBody": "Besseres Data Modeling, Streaming-Patterns, produktionsnahe Monitoring-Praktiken und PyTorch.",
+
+        "contact.title": "Kontakt",
+        "contact.body": "Am besten erreichbar per E-Mail oder LinkedIn.",
+        "contact.emailBtn": "E-Mail senden"
+      }
+    };
+
+    const btnEN = document.getElementById("btnEN");
+    const btnDE = document.getElementById("btnDE");
+
+    function setActive(lang){
+      btnEN.classList.toggle("active", lang === "en");
+      btnDE.classList.toggle("active", lang === "de");
+    }
+
+    function applyLang(lang){
+      document.documentElement.setAttribute("lang", lang);
+      const dict = i18n[lang] || i18n.en;
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+
+      localStorage.setItem("lang", lang);
+      setActive(lang);
+    }
+
+    const saved = localStorage.getItem("lang");
+    const navLang = (navigator.language || "en").toLowerCase();
+    const browserPref = navLang.startsWith("de") ? "de" : "en";
+    applyLang(saved || browserPref);
+
+    btnEN.addEventListener("click", () => applyLang("en"));
+    btnDE.addEventListener("click", () => applyLang("de"));
+
+    const photoModalEl = document.getElementById("photoModal");
+    photoModalEl.addEventListener("click", () => {
+      const instance = bootstrap.Modal.getInstance(photoModalEl);
+      if (instance) instance.hide();
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
